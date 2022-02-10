@@ -57,10 +57,7 @@ const getUniqueUsers = (responses) => {
     const users = responses.map(r => r.user);
     const uniqueUsers = [...new Set(users)];
     const uniqueUsersResponses = uniqueUsers.map(u => {
-        return {
-            user: u,
-            responses: responses.filter(r => r.user === u)
-        }
+        return u
     });
 
     return uniqueUsersResponses;

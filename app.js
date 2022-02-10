@@ -3,18 +3,20 @@ import express from 'express';
 import createError from 'http-errors';
 import logger from 'morgan';
 import mongoose from 'mongoose';
-import * as slack from '@slack/bolt';
+
+import index from './routes/index.route.js';
+import {router} from './routes/slack.route.js';
+import responseController from './controllers/response.controller.js';
 
 dotenv.config();
 
 const port = process.env.PORT;
-import index from './routes/index.route.js';
-
 const app = express();
 
 app.use(logger('dev'));
 
 app.use('/', index);
+app.use(`/slack`, router);
 
 app.use((req, res, next) => {
   next(createError(404));
