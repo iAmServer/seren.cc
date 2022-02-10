@@ -2,17 +2,21 @@
   "name": "seren-slack",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@slack/bolt": "^3.9.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
-    "mongoose": "^6.2.1"
+    "http-errors": "^2.0.0",
+    "mongoose": "^6.2.1",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "jest": "^27.5.1"
