@@ -66,7 +66,6 @@ botApp.command('/bot', async ({ ack, body, say }) => {
 botApp.action('user_feeling', async ({ body, ack, say }) => {
     await ack();
 
-    // save response
     responseController.insert({
         question: 'Welcome. How are you doing?',
         user: body.user.id,
@@ -134,7 +133,6 @@ botApp.action('user_feeling', async ({ body, ack, say }) => {
 botApp.action('user_hobby', async ({ body, ack, say }) => {
     await ack();
 
-    // save response
     responseController.insert({
         question: 'What are your favorite hobbies?',
         user: body.user.id,

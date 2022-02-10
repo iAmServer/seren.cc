@@ -6,7 +6,6 @@ import mongoose from 'mongoose';
 
 import index from './routes/index.route.js';
 import {router} from './routes/slack.route.js';
-import responseController from './controllers/response.controller.js';
 
 dotenv.config();
 
