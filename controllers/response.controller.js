@@ -26,10 +26,16 @@ export default  {
 
         responseModel.getAll(query, options)
             .then(response => {
-                res.status(200).json({
+                const resp = {
                     success: true,
                     data: params.usersOnly ? getUniqueUsers(response) : ( params.responsesOnly ? getQuestionAndResponseOnly(response): response)
-                });
+                }
+
+                if (params.user) {
+                    resp.user = params.user;
+                }
+                    
+                res.status(200).json(resp);
             })
             .catch(err => {
                 res.status(500).json({
@@ -45,8 +51,8 @@ export default  {
             throw new Error('Missing required fields');
         }
 
-        responseModel.insert({ user, question, response }).then(response => {
-            return response;
+        responseModel.insert({ user, question, response }).then(res => {
+            return res;
         }).catch(err => {
             throw new Error(err);
         });

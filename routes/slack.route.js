@@ -1,6 +1,8 @@
 import Bot from '@slack/bolt';
+import { InstallProvider } from '@slack/oauth';
 import dotenv from 'dotenv';
 import responseController from '../controllers/response.controller.js'
+import installController from '../controllers/install.controller.js'
 
 dotenv.config();
 
@@ -9,10 +11,60 @@ const receiver = new Bot.ExpressReceiver({
     endpoints: '/'
 });
 
+const installer = new InstallProvider({
+    clientId: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    // logLevel: Bot.LogLevel.DEBUG,
+    stateSecret: process.env.SLACK_STATE_SECRET,
+    installationStore: {
+        storeInstallation: async (installation) => {
+            if (installation.isEnterpriseInstall) {
+                return await installController.insert({
+                    enterpriseId: installation.enterprise.id,
+                    installation
+                });
+            }else if(installation.team && installation.team.id){
+                return await installController.insert({
+                    teamId: installation.team.id,
+                    installation
+                });
+            }
+
+            throw new Error('Failed saving installtion data to installationStore');
+        },
+        fetchInstallation: async (installQuery) => {
+            if (installQuery.isEnterpriseInstall) {
+                if (installQuery.enterpriseId !== undefined) {
+                    return await installController.getOne({ enterpriseId: installQuery.enterpriseId });
+                }
+            }
+
+            if (installQuery.teamId !== undefined) {
+                return await installController.getOne({teamId: installQuery.teamId})
+            }
+
+            throw new Error('Failed fetching installation')
+        },
+        deleteInstallation: async (installQuery) => {
+            if (installQuery.isEnterpriseInstall) {
+                if (installQuery.enterpriseId !== undefined) {
+                    return await installController.remove({ enterpriseId: installQuery.enterpriseId });
+                }
+            }
+
+            if (installQuery.teamId !== undefined) {
+                return await installController.remove({ teamId: installQuery.teamId });
+            }
+
+            throw new Error('Failed to delete installation');
+        }
+    }
+})
+
 const botApp = new Bot.App({
     token: process.env.SLACK_BOT_TOKEN,
     receiver,
-    logLevel: Bot.LogLevel.DEBUG,
+    // logLevel: Bot.LogLevel.DEBUG    
 });
 
 botApp.command('/bot', async ({ ack, body, say }) => {
@@ -143,3 +195,4 @@ botApp.action('user_hobby', async ({ body, ack, say }) => {
 
 export default botApp;
 export const router = receiver.router;
+export const slackInstaller = installer;

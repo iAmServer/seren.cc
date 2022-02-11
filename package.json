@@ -5,13 +5,15 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node --trace-warnings' NODE_ENV=test jest --verbose"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@slack/bolt": "^3.9.0",
+    "@slack/oauth": "^2.4.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "http-errors": "^2.0.0",
@@ -19,6 +21,8 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "mongodb-memory-server": "^8.3.0",
+    "supertest": "^6.2.2"
   }
 }
