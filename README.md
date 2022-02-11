@@ -1,2 +1,11 @@
 # seren.cc
-Technicalest T
+Technical Test
+
+
+### To run 
+
+```npm install```  the  ```npm run start```
+
+
+### To test
+```npm test```
