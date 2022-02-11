@@ -9,3 +9,7 @@ Technical Test
 
 ### To test
 ```npm test```
+
+
+### Heroku demo
+Go to https://seren-test-bot.herokuapp.com/slack/install to install the bot
