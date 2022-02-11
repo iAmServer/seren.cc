@@ -18,7 +18,7 @@ app.get('/slack/install', async (req, res) => {
         scopes: ['app_mentions:read', 'channels:history', 'channels:join', 'channels:read', 'chat:write', 'chat:write.customize', 'chat:write.public', 'commands', 'dnd:read', 'groups:history', 'im:read', 'im:write', 'mpim:history', 'mpim:read', 'mpim:write', 'users.profile:read', 'users:read', 'channels:manage', 'groups:read', 'groups:write', 'im:history', 'incoming-webhook'],
         userScopes: ['channels:read', 'groups:read', 'im:history', 'im:read', 'users:read'],
         metadata: 'Seren',
-        redirectUri: 'https://8f2e-102-89-34-217.ngrok.io/slack/auth/callback'
+        redirectUri: process.env.REDIRECT_URI
     });
 
     res.status(200).send(link);
