@@ -1,8 +1,8 @@
 import installModel from '../models/install.model.js';
 
 export default  {
-    getAll: (params) => {
-        installModel.getAll(params)
+    getAll: (req, res) => {
+        installModel.getAll()
             .then(response => {
                 res.status(200).json({
                     success: true,
@@ -19,16 +19,10 @@ export default  {
     getOne: (params) => {
         installModel.getOne(params)
             .then(response => {
-                res.status(200).json({
-                    success: true,
-                    data: response
-                });
+                return response;
             })
             .catch(err => {
-                res.status(500).json({
-                    success: false,
-                    error: err
-                });
+                throw new Error(err);
             });
     },
     insert: (data) => {
@@ -41,16 +35,10 @@ export default  {
     remove: (params) => {
         installModel.remove(params)
             .then(response => {
-                res.status(200).json({
-                    success: true,
-                    data: response
-                });
+                return response;
             })
             .catch(err => {
-                res.status(500).json({
-                    success: false,
-                    error: err
-                });
+                throw new Error(err);
             });
     }
 };

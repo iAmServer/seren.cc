@@ -3,15 +3,12 @@ import responseController from "../controllers/response.controller";
 import { app, server } from '../app';
 
 const request = supertest(app);
-import { Connect, Disconnect } from '../db-conn';
+import { Disconnect } from '../db-conn';
 
 describe('API test', () => {
-    beforeEach(async () => {
-        await Connect();
-    });
-
-    afterEach(async () => {
+    afterAll(async () => {
         await Disconnect();
+        server.close();
     });
 
     describe('GET /slack/install', () => {
@@ -19,6 +16,15 @@ describe('API test', () => {
             const res = await request.get('/slack/install');
 
             expect(res.status).toBe(200);
+        });
+    });
+
+    describe('GET /installs', () => {
+        it('get all installs', async () => {
+            const res = await request.get('/installs');
+
+            expect(res.status).toBe(200);
+            expect(res.body.data).toBeDefined();
         });
     });
 
@@ -51,20 +57,18 @@ describe('API test', () => {
     describe('Insert into response collection', () => {
         it('should insert a response into the database', async () => {
             try {
-                responseController.insert({
+                await responseController.insert({
                     question: 'What are your favorite hobbies?',
                     user: 'U4Y3GKGF9',
                     response: 'Football'
+                }).then(async (resp) => {
+                    const res = await request.get('/retrieve');
+
+                    expect(res.status).toBe(200);
                 });
-    
-                const res = await request.get('/retrieve');
-                console.log(res.body.data);
-                expect(res.status).toBe(200);
-                // expect(res.body.data).toEquals('U4Y3GKGF9');
             } catch (e) {
-                console.log(e);
+                expect(e).toBeUndefined();
             }
         });
     });
-
 });

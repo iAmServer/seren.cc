@@ -44,7 +44,7 @@ export default  {
                 });
             });
     },
-    insert: (data) => {
+    insert: async (data) => {
         const { user, question, response } = data;
         
         if (!user || !question || !response) {

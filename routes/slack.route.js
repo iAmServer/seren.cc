@@ -14,7 +14,6 @@ const receiver = new Bot.ExpressReceiver({
 const installer = new InstallProvider({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    // logLevel: Bot.LogLevel.DEBUG,
     stateSecret: process.env.SLACK_STATE_SECRET,
     installationStore: {
         storeInstallation: async (installation) => {
@@ -63,14 +62,17 @@ const installer = new InstallProvider({
 
 const botApp = new Bot.App({
     token: process.env.SLACK_BOT_TOKEN,
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
     receiver,
-    // logLevel: Bot.LogLevel.DEBUG    
 });
 
-botApp.command('/bot', async ({ ack, body, say }) => {
+botApp.command('/bot', async ({ ack, body, context, respond }) => {
     await ack();
 
-    await say({
+    await respond({
+        token: context.botToken,
+        response_type: 'in_channel',
+        channel: body.channel_id,
         blocks: [
             {
                 type: "section",
@@ -115,7 +117,7 @@ botApp.command('/bot', async ({ ack, body, say }) => {
     });
 });
 
-botApp.action('user_feeling', async ({ body, ack, say }) => {
+botApp.action('user_feeling', async ({ body, ack, context, respond }) => {
     await ack();
 
     responseController.insert({
@@ -123,7 +125,10 @@ botApp.action('user_feeling', async ({ body, ack, say }) => {
         user: body.user.id,
         response: body.actions[0].selected_option.value,
     });
-    await say({
+    await respond({
+        token: context.botToken,
+        response_type: 'in_channel',
+        channel: body.channel_id,
         blocks: [
             {
                 type: "section",
@@ -182,7 +187,7 @@ botApp.action('user_feeling', async ({ body, ack, say }) => {
     });
 });
 
-botApp.action('user_hobby', async ({ body, ack, say }) => {
+botApp.action('user_hobby', async ({ body, ack, context, respond }) => {
     await ack();
 
     responseController.insert({
@@ -190,7 +195,12 @@ botApp.action('user_hobby', async ({ body, ack, say }) => {
         user: body.user.id,
         response: body.actions[0].selected_option.value,
     });
-    await say("Thank you");
+    await respond({
+        token: context.botToken,
+        response_type: 'in_channel',
+        channel: body.channel_id,
+        text: 'Thank you!'
+    });
 });
 
 export default botApp;
